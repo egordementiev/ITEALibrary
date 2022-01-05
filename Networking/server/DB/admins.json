@@ -1,0 +1,16 @@
+{
+  "admins": [
+    {
+      "name": "\u0415\u0433\u043e\u0440",
+      "surname": "\u0414\u0435\u043c\u0435\u043d\u0442\u044c\u0435\u0432",
+      "user_id": 981881436,
+      "add_by": null
+    },
+    {
+      "name": "Test",
+      "surname": "Admin",
+      "user_id": 93627752,
+      "add_by": 981881436
+    }
+  ]
+}
