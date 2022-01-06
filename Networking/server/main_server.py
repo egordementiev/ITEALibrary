@@ -43,7 +43,6 @@ def start_server():
                 msg, msg_type = recv_msg(conn)  # <<
                 msg = msg.decode(default_encoding)
                 books, sort_field = lib.get_books(msg)
-                print(books)
                 if not books:
                     send_msg('Книг не найдено'.encode(default_encoding), conn, 'statement')
                     continue
@@ -58,7 +57,6 @@ def start_server():
                 msg, msg_type = recv_msg(conn)
                 msg = msg.decode(default_encoding)
                 readers, sort_field = lib.get_readers(msg)
-                print(readers)
                 if not readers:
                     send_msg('Читателей не найдено'.encode(default_encoding), conn, 'statement')
                     continue
@@ -87,8 +85,7 @@ def start_server():
                 send_msg('Введите id книги:'.encode(default_encoding), conn)
                 msg, msg_type = recv_msg(conn)  # получаем id книги
                 _id = msg.decode(default_encoding)
-
-                if not is_num(_id):
+                if is_num(_id):
                     _id = int(_id)
                 else:
                     if _id != 'авто':
