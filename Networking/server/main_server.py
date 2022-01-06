@@ -43,8 +43,9 @@ def start_server():
                 msg, msg_type = recv_msg(conn)  # <<
                 msg = msg.decode(default_encoding)
                 books, sort_field = lib.get_books(msg)
+                print(books)
                 if not books:
-                    send_msg('Книг не найдено'.encode(default_encoding), conn)
+                    send_msg('Книг не найдено'.encode(default_encoding), conn, 'statement')
                     continue
                 books = [f'{books}\n' for books in books]
                 send_msg(f"Список книг отсортирован по полю {sort_field}\n{''.join(books)}".encode(default_encoding),
@@ -57,8 +58,9 @@ def start_server():
                 msg, msg_type = recv_msg(conn)
                 msg = msg.decode(default_encoding)
                 readers, sort_field = lib.get_readers(msg)
+                print(readers)
                 if not readers:
-                    send_msg('Читателей не найдено'.encode(default_encoding), conn)
+                    send_msg('Читателей не найдено'.encode(default_encoding), conn, 'statement')
                     continue
                 readers = [f'{reader}\n' for reader in readers]
                 send_msg(f"Список читателей отсортирован по полю"

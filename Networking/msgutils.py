@@ -1,5 +1,4 @@
 from socket import socket
-from typing import Union
 
 default_msg_type = 'question'
 default_header_size = 10
@@ -35,7 +34,7 @@ def send_msg(msg: bytes, conn: socket, msg_type: str = default_msg_type, header_
 
 def recv_msg(conn: socket, header_size: int = default_header_size,
              pack_size: int = default_pack_size,
-             msg_type_size: int = default_msg_type_size) -> [Union[bytes, str]]:
+             msg_type_size: int = default_msg_type_size) -> [bytes, str]:
 
     # читаем заголовок, в котором размер последующего сообщения
     data = conn.recv(header_size)

@@ -1,20 +1,17 @@
-from Library.LibraryUnits.Admin import Admin
 from Library.LibraryUnits.Book import Book
 from Library.LibraryUnits.Reader import Reader
-from Library.LibraryUnits.WorkWithDataBase.LibraryUnitsDB import BookDataBase, ReaderDataBase, AdminDataBase
+from Library.LibraryUnits.WorkWithDataBase.LibraryUnitsDB import BookDataBase, ReaderDataBase
 from typing import Union
 
 
 class Library:
-    def __init__(self, books: list = None, readers: list = None,  admins: list = None,
-                 books_data_base_path='DB/books.json', readers_data_base_path='DB/reader.json',
-                 admins_data_base_path='DB/admins.json'):
+    def __init__(self, books: list = None, readers: list = None,
+                 books_data_base_path='./DB/books.json', readers_data_base_path='./DB/reader.json'):
         self.__book_db = BookDataBase(books_data_base_path)
         self.__reader_db = ReaderDataBase(readers_data_base_path)
-        self.__admin_db = AdminDataBase(admins_data_base_path)
         self.__books = books if books else self.__book_db.read_from_db()
         self.__readers = readers if readers else self.__reader_db.read_from_db()
-        self.__admins = admins if admins else self.__admin_db.read_from_db()
+        print(self.__readers)
 
     def add_book(self, title: str, author: str, year: int, book_id: int = None):
         """Добавление книги"""
@@ -42,17 +39,6 @@ class Library:
         print(f'Done: reader was successfully added to the library')
         return 'Done'
 
-    def add_admin(self, name: str, surname: str, user_id: int, add_by: int):
-        for admin in self.__admins:
-            if admin.get_user_id() == user_id:
-                print(f'Error: admin with id {user_id} already exists')
-                return 'Error: admin with this id already exists'
-
-        self.__admins.append(Admin(name, surname, user_id, add_by))
-        self.save_admins()
-        print(f'Done: admin was successfully added to the library')
-        return 'Done'
-
     def del_book(self, book_id):
         book = self.get_book_by_id(book_id)
         print(book)
@@ -77,23 +63,11 @@ class Library:
             return 'Done'
         return 'Error, this reader is not in the library'
 
-    def del_admin(self, user_id):
-        admin = self.get_admin_by_id(user_id)
-        if admin:
-            if admin.get_add_by() is not None:
-                self.__admins.remove(admin)
-                self.save_admins()
-                return 'Done'
-            return 'Error, unable to remove master administrator'
-
     def save_books(self):
         self.__book_db.write_to_db(self.__books)
 
     def save_readers(self):
         self.__reader_db.write_to_db(self.__readers)
-
-    def save_admins(self):
-        self.__admin_db.write_to_db(self.__admins)
 
     def print_all_books(self):
         """Функция вывода всех книг"""
@@ -111,17 +85,6 @@ class Library:
                 print(book)
 
     def print_all_readers(self):
-        """
-        Функция вывода всех читателей
-        """
-        if not self.__readers:
-            print('There are no readers in the library yet')
-            return
-
-        for reader in self.__readers:
-            print(reader)
-
-    def print_all_admins(self):
         """
         Функция вывода всех читателей
         """
@@ -222,6 +185,8 @@ class Library:
             elif sort == 'year':
                 return int(obj.get_year())
 
+        print(f'books = {self.__books}, type = {type(self.__books)}')
+        print({type(sorted(self.__books, key=get_sort_field_book, reverse=reverse))})
         books = [book for book in sorted(self.__books, key=get_sort_field_book, reverse=reverse)]
         return books, sort
 
@@ -242,15 +207,9 @@ class Library:
             elif sort == 'year':
                 return int(obj.get_year())
 
+        print(f'readers = {self.__readers}, type = {type(self.__readers)}')
         readers = [reader for reader in sorted(self.__readers, key=get_sort_field_reader)]
         return [readers, sort]
-
-    def get_admins(self):
-        return self.__admins
-
-    def is_admin(self, user_id):
-        admin = self.get_admin_by_id(user_id)
-        return True if admin in self.__admins else False
 
     def get_book_by_id(self, book_id: int) -> Union[Book, None]:
         """
@@ -260,38 +219,11 @@ class Library:
         :return: obj Book (если книга есть в библиотеке); None (если книги нет)
         """
         for book in self.__books:
-            print(f'{book.get_id()} ({type(book.get_id())}) == {book_id} ({type(book_id)}) - {book.get_id() == book_id}')
+            print(f'{book.get_id()} ({type(book.get_id())}) == {book_id} '
+                  f'({type(book_id)}) - {book.get_id() == book_id}')
             if book.get_id() == book_id:
                 return book
         return None
-
-    def get_books_by_title(self, book_title: str):
-        title = ''.join([letter for letter in book_title if letter.isalpha()]).lower()
-        books = []
-        for book in self.__books:
-            book_del_symbol = ''.join([letter for letter in book.get_title() if letter.isalpha()]).lower()
-            if book_del_symbol.startswith(title):
-                books.append(book)
-
-        return books
-
-    def get_books_by_author(self, book_author: str):
-        author = ''.join([letter for letter in book_author if letter.isalpha()]).lower()
-        books = []
-        for book in self.__books:
-            book_del_symbol = ''.join([letter for letter in book.get_author() if letter.isalpha()]).lower()
-            if book_del_symbol.startswith(author):
-                books.append(book)
-
-        return books
-
-    def get_books_by_year(self, book_year: int):
-        books = []
-        for book in self.__books:
-            if book.get_year() == book_year:
-                books.append(book)
-
-        return books
 
     def get_reader_by_id(self, reader_id: int) -> Union[Reader, None]:
         """
@@ -303,29 +235,4 @@ class Library:
         for reader in self.__readers:
             if reader.get_id() == reader_id:
                 return reader
-        return None
-
-    def get_readers_by_full_name(self, name, surname, patronymic=''):
-        name = name.lower()
-        surname = surname.lower()
-        patronymic = patronymic.lower()
-        readers = []
-        for reader in self.__readers:
-            r_name = reader.get_name().lower()
-            r_surname = reader.get_surname().lower()
-            r_patronymic = reader.get_patronymic().lower()
-            if r_name == name and r_surname == surname and r_patronymic == patronymic:
-                readers.append(reader)
-        return readers
-
-    def get_admin_by_id(self, user_id: int) -> Union[Admin, None]:
-        """
-        Функция получения админа по user_id из списка читателей
-
-        :param user_id: id читателя
-        :return: obj Admin (если админ есть в библиотеке); None (если его нет)
-        """
-        for admin in self.__admins:
-            if admin.get_user_id() == user_id:
-                return admin
         return None

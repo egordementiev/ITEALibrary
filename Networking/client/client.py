@@ -16,9 +16,9 @@ while True:
     # узер вводит комманду
     while True:
         msg = input('')
-        if not msg:
-            continue
-        break
+        if msg:
+            break
+        continue
 
     if msg in ['end_connection', 'stop_server']:
         send_msg(msg.encode(default_encoding), sock)
