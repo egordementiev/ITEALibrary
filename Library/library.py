@@ -6,12 +6,14 @@ from typing import Union
 
 class Library:
     def __init__(self, books: list = None, readers: list = None,
-                 books_data_base_path='./DB/books.json', readers_data_base_path='./DB/reader.json'):
+                 books_data_base_path='./DB/books.json',
+                 readers_data_base_path='./DB/reader.json'):
         self.__book_db = BookDataBase(books_data_base_path)
         self.__reader_db = ReaderDataBase(readers_data_base_path)
         self.__books = books if books else self.__book_db.read_from_db()
         self.__readers = readers if readers else self.__reader_db.read_from_db()
         print(self.__readers)
+        print(self.__books)
 
     def add_book(self, title: str, author: str, year: int, book_id: int = None):
         """Добавление книги"""
