@@ -2,7 +2,7 @@ import socket
 import sys
 from Networking.msgutils import send_msg, recv_msg, default_encoding
 from Library.library import Library
-from threading import Thread
+from threading import Thread, Lock
 
 sock = socket.socket()
 sock.bind(('localhost', 5050))
@@ -15,7 +15,7 @@ lib = Library(books_data_base_path=books_data_base_path,
               readers_data_base_path=readers_data_base_path)
 
 
-def work_with_client(conn):
+def work_with_client(conn, lock):
     send_msg("""Список доступных команд:
 
         print_books - выводит список всех книг
@@ -108,7 +108,9 @@ def work_with_client(conn):
                     continue
                 _id = None
 
+            lock.acquire()
             ret = lib.add_book(title, author, year_of_publishing, _id)
+            lock.release()
             if ret == 'Error: book with this id already exists':
                 send_msg('Произошла ошибка, id уже занят, попробуйте снова'
                          ''.encode(default_encoding), conn, 'statement')
@@ -150,7 +152,9 @@ def work_with_client(conn):
                     continue
                 _id = None
 
+            lock.acquire()
             ret = lib.add_reader(name, surname, patronymic, year, _id)
+            lock.release()
             if ret == 'Error: reader with this id already exists':
                 send_msg('Ошибка, читатель с таким id уже существует'.encode(default_encoding), conn, 'statement')
                 continue
@@ -192,7 +196,9 @@ def work_with_client(conn):
                 continue
 
             _id = int(_id)
+            lock.acquire()
             ret = lib.del_reader(_id)
+            lock.release()
             if ret == 'Error, this reader has a book':
                 send_msg('Произошла ошибка, невозможно удалить читателя. Читатель имеет'
                          ' на руках книгу'.encode(default_encoding), conn, 'statement')
@@ -254,7 +260,9 @@ def work_with_client(conn):
             reader_id = int(reader_id)
             book_id = int(book_id)
 
+            lock.acquire()
             ret = lib.return_book(book_id, reader_id)
+            lock.release()
             if ret == 'Error: book with this id is not in the library':
                 send_msg('Ошибка, книги с таким id нет в библиотеке'.encode(default_encoding), conn, 'statement')
                 continue
@@ -279,10 +287,10 @@ def work_with_client(conn):
 
 
 def start_server():
-    print(sys.path)
+    lock = Lock()
     while True:
         conn, _ = sock.accept()
-        thread = Thread(target=work_with_client, args=(conn,))
+        thread = Thread(target=work_with_client, args=(conn, lock))
         thread.start()
 
 
