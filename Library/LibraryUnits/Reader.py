@@ -11,7 +11,7 @@ class Reader:
                  age: int,
                  _id: int = None):
 
-        self.__id = _id if _id is not None else int(id(self))
+        self.__id = _id
         self.__name = name
         self.__surname = surname
         self.__patronymic = patronymic
@@ -29,7 +29,7 @@ class Reader:
     def get_patronymic(self):
         return self.__patronymic
 
-    def get_year(self):
+    def get_age(self):
         return self.__age
 
     def set_name(self, name):

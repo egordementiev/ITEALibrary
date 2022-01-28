@@ -1,18 +1,14 @@
 import socket
-import sys
 from Networking.msgutils import send_msg, recv_msg, default_encoding
 from Library.library import Library
 from threading import Thread, Lock
 
 sock = socket.socket()
-sock.bind(('localhost', 5050))
+sock.bind(('localhost', 12345))
 sock.listen(5)
 
-books_data_base_path = sys.path[0] + '/DB/books.json'  # Я пошел на такое, потому что у меня
-readers_data_base_path = sys.path[0] + '/DB/readers.json'  # продолжал не работать относительный путь
 
-lib = Library(books_data_base_path=books_data_base_path,
-              readers_data_base_path=readers_data_base_path)
+lib = Library()
 
 
 def work_with_client(conn, lock):
@@ -97,19 +93,8 @@ def work_with_client(conn, lock):
                 continue
             year_of_publishing = int(year_of_publishing)
 
-            send_msg('Введите id книги:'.encode(default_encoding), conn)
-            msg, msg_type = recv_msg(conn)  # получаем id книги
-            _id = msg.decode(default_encoding)
-            if _id.isnumeric:
-                _id = int(_id)
-            else:
-                if _id != 'авто':
-                    send_msg('Ошибка, id должно быть числом'.encode(default_encoding), conn, 'statement')
-                    continue
-                _id = None
-
             lock.acquire()
-            ret = lib.add_book(title, author, year_of_publishing, _id)
+            ret = lib.add_book(title, author, year_of_publishing)
             lock.release()
             if ret == 'Error: book with this id already exists':
                 send_msg('Произошла ошибка, id уже занят, попробуйте снова'
@@ -131,29 +116,17 @@ def work_with_client(conn, lock):
             msg, msg_type = recv_msg(conn)  # получаем отчество читателя
             patronymic = msg.decode(default_encoding)
 
-            send_msg('Введите год рождения читателя:'.encode(default_encoding), conn)
+            send_msg('Введите возраст читателя:'.encode(default_encoding), conn)
             msg, msg_type = recv_msg(conn)  # получаем год рождения читателя
             year = msg.decode(default_encoding)
 
-            send_msg('Введите id читателя:'.encode(default_encoding), conn)
-            msg, msg_type = recv_msg(conn)  # получаем id читателя
-            _id = msg.decode(default_encoding)
-
             if not year.isnumeric:
-                send_msg('Ошибка, год рождения должен быть числом'.encode(default_encoding), conn, 'statement')
+                send_msg('Ошибка, возраст должен быть числом'.encode(default_encoding), conn, 'statement')
                 continue
             year = int(year)
 
-            if _id.isnumeric:
-                _id = int(_id)
-            else:
-                if _id != 'авто':
-                    send_msg('Ошибка, id должно быть числом'.encode(default_encoding), conn, 'statement')
-                    continue
-                _id = None
-
             lock.acquire()
-            ret = lib.add_reader(name, surname, patronymic, year, _id)
+            ret = lib.add_reader(name, surname, patronymic, year)
             lock.release()
             if ret == 'Error: reader with this id already exists':
                 send_msg('Ошибка, читатель с таким id уже существует'.encode(default_encoding), conn, 'statement')

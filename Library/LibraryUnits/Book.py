@@ -12,7 +12,7 @@ class Book:
                  _id: int = None,
                  reader_id: int = None):
 
-        self.__id = _id if _id is not None else int(id(self))
+        self.__id = _id
         self.__title = title
         self.__author = author
         self.__year = year
