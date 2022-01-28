@@ -48,7 +48,7 @@ class DataBase(ABC):
 
 class DataBasePostgreSQL(DataBase):
     """ Клас описывающий роботу с базой данных PostgreSQL """
-    def __init__(self, port='5432', host='localhost', password='fagSxElh3f2c5_', dbname='postgres', user='postgres'):
+    def __init__(self, port='5432', host='localhost', password='123', dbname='postgres', user='postgres'):
         self.conn = psycopg2.connect(dbname=dbname,
                                      user=user,
                                      password=password,
