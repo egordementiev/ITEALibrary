@@ -70,11 +70,11 @@ def start_server():
     sock.listen(1)
     with open('numbers.txt', 'w') as file:
         file.write('')
-    while True:
-        conn, _ = sock.accept()
-        print('new connection')
-        start_time = time()
-        work_with_client(conn)
-        finish_time = time()
-        print(f"time = {finish_time-start_time}")
+    conn, _ = sock.accept()
+    print('new connection')
+    start_time = time()
+    work_with_client(conn)
+    finish_time = time()
+    print(f"time = {finish_time-start_time}")
+    conn.close()
     sock.close()
