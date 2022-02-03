@@ -1,24 +1,28 @@
 import socket
 from Networking.msgutils import send_msg, recv_msg, default_encoding
+from time import time
+from sympy import isprime
 
 sock = socket.socket()
-sock.connect(('127.0.0.1', 5050))
+sock.connect(('127.0.0.1', 5500))
 
 
-def is_prime(num):
-    for i in range(2, int(num / 2) + 1):
-        if (num % i) == 0:
-            return False
-    else:
-        return True
+# def is_prime(num):
+#     for i in range(2, int(num / 2) + 1):
+#         if (num % i) == 0:
+#             return False
+#     else:
+#         return True
 
 
-while True:
-    msg = ''
-    for i in range(20000):
-        if is_prime(i):
-            msg += f'{i},'
-    send_msg(msg.encode(default_encoding), sock)
-    send_msg('finish'.encode(default_encoding), sock)
-    break
+start_time = time()
+msg = ''
+for i in range(2000000):
+    if isprime(i):
+        msg += f'{i},'
+send_msg(msg.encode(default_encoding), sock)
+msg = recv_msg(sock)
+finish_time = time()
+print(f'time = {finish_time-start_time}')
+
 sock.close()
