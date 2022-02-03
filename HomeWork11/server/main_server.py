@@ -5,10 +5,6 @@ from Networking.msgutils import send_msg, recv_msg, default_encoding
 from threading import Thread, Lock
 from sympy import isprime
 
-sock = socket.socket()
-sock.bind(('localhost', 5500))
-sock.listen(1)
-
 
 # def is_prime(num):
 #     for i in range(2, int(num / 2) + 1):
@@ -69,6 +65,9 @@ def work_with_client(conn):
 
 
 def start_server():
+    sock = socket.socket()
+    sock.bind(('localhost', 5500))
+    sock.listen(1)
     with open('numbers.txt', 'w') as file:
         file.write('')
     while True:
@@ -78,7 +77,4 @@ def start_server():
         work_with_client(conn)
         finish_time = time()
         print(f"time = {finish_time-start_time}")
-
-
-start_server()
-sock.close()
+    sock.close()

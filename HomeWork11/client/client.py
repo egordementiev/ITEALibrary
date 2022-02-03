@@ -15,14 +15,14 @@ sock.connect(('127.0.0.1', 5500))
 #         return True
 
 
-start_time = time()
-msg = ''
-for i in range(2000000):
-    if isprime(i):
-        msg += f'{i},'
-send_msg(msg.encode(default_encoding), sock)
-msg = recv_msg(sock)
-finish_time = time()
-print(f'time = {finish_time-start_time}')
-
-sock.close()
+def start_client():
+    start_time = time()
+    msg = ''
+    for i in range(2000000):
+        if isprime(i):
+            msg += f'{i},'
+    send_msg(msg.encode(default_encoding), sock)
+    msg = recv_msg(sock)
+    finish_time = time()
+    print(f'time = {finish_time-start_time}')
+    sock.close()
