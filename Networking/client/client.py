@@ -2,7 +2,7 @@ import socket
 from Networking.msgutils import send_msg, recv_msg, default_encoding
 
 sock = socket.socket()
-sock.connect(('127.0.0.1', 12345))
+sock.connect(('127.0.0.1', 5555))
 
 while True:
     msg, msg_type = recv_msg(sock)

@@ -4,7 +4,7 @@ from Library.library import Library
 from threading import Thread, Lock
 
 sock = socket.socket()
-sock.bind(('localhost', 12345))
+sock.bind(('localhost', 5555))
 sock.listen(5)
 
 
@@ -118,15 +118,15 @@ def work_with_client(conn, lock):
 
             send_msg('Введите возраст читателя:'.encode(default_encoding), conn)
             msg, msg_type = recv_msg(conn)  # получаем год рождения читателя
-            year = msg.decode(default_encoding)
+            age = msg.decode(default_encoding)
 
-            if not year.isnumeric:
+            if not age.isnumeric:
                 send_msg('Ошибка, возраст должен быть числом'.encode(default_encoding), conn, 'statement')
                 continue
-            year = int(year)
+            age = int(age)
 
             lock.acquire()
-            ret = lib.add_reader(name, surname, patronymic, year)
+            ret = lib.add_reader(name, surname, patronymic, age)
             lock.release()
             if ret == 'Error: reader with this id already exists':
                 send_msg('Ошибка, читатель с таким id уже существует'.encode(default_encoding), conn, 'statement')

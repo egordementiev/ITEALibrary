@@ -1,48 +1,32 @@
 """
 Модуль для описания сущности "Читатель"
 """
+from typing import Union
+from Library.DataBase.DataBaseConfig import Base
+from sqlalchemy import Column, Integer, ARRAY, Boolean, Text, ForeignKey
 
 
-class Reader:
+class Reader(Base):
+    __tablename__ = 'readers'
+
+    ID = Column(Integer, primary_key=True)
+    name = Column(Text)
+    surname = Column(Text)
+    patronymic = Column(Text)
+    age = Column(Integer)
+
     def __init__(self,
+                 ID: Union[int, None],
                  name: str,
                  surname: str,
                  patronymic: str,
-                 age: int,
-                 _id: int = None):
+                 age: int):
 
-        self.__id = _id
-        self.__name = name
-        self.__surname = surname
-        self.__patronymic = patronymic
-        self.__age = age
-
-    def get_id(self):
-        return self.__id
-
-    def get_name(self):
-        return self.__name
-
-    def get_surname(self):
-        return self.__surname
-
-    def get_patronymic(self):
-        return self.__patronymic
-
-    def get_age(self):
-        return self.__age
-
-    def set_name(self, name):
-        self.__name = name
-
-    def set_surname(self, surname):
-        self.__surname = surname
-
-    def set_patronymic(self, patronymic):
-        self.__patronymic = patronymic
-
-    def set_age(self, age):
-        self.__age = age
+        self.ID = ID
+        self.name = name
+        self.surname = surname
+        self.patronymic = patronymic
+        self.age = age
 
     def __repr__(self):
-        return f'({self.__id}) {self.__surname} {self.__name} {self.__patronymic} | {self.__age}'
+        return f'({self.ID}) {self.surname} {self.name} {self.patronymic} | {self.age}'
