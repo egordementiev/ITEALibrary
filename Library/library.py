@@ -27,7 +27,7 @@ class Library:
 
         """
         self.__data_base.add_reader(Reader(None, name, surname, patronymic,
-                                           age, is_admin, email, password))   # Добавление читателя в базу данных
+                                           age, is_admin, email, password))  # Добавление читателя в базу данных
         print(f'Done: reader was successfully added to the library')
         return 'Done: reader was successfully added to the library'
 
