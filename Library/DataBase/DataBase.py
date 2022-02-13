@@ -145,8 +145,8 @@ class DataBase(ABC):
 
 class DataBaseSQLAlchemy(DataBase):
     """ Клас описывающий роботу с базой данных PostgreSQL """
-    def __init__(self, port='5432', host='localhost', password='123', dbname='postgres', user='postgres'):
-        self.engine = create_engine(f'postgresql://{user}:{password}@{host}:{port}/{dbname}')
+    def __init__(self, dbport='5432', dbhost='localhost', dbpassword='123', dbname='postgres', dbuser='postgres'):
+        self.engine = create_engine(f'postgresql://{dbuser}:{dbpassword}@{dbhost}:{dbport}/{dbname}')
         Base.metadata.create_all(self.engine)
 
     def add_book(self, book: Book):
@@ -182,7 +182,8 @@ class DataBaseSQLAlchemy(DataBase):
         try:
             session.add(reader)
             session.commit()
-        except:
+        except Exception as e:
+            print(e)
             return False
         finally:
             session.close()
@@ -195,6 +196,7 @@ class DataBaseSQLAlchemy(DataBase):
         old_reader.surname = reader.surname
         old_reader.patronymic = reader.patronymic
         old_reader.age = reader.age
+        old_reader.is_admin = reader.is_admin
         print(session.dirty)
         session.commit()
 
@@ -207,8 +209,8 @@ class DataBaseSQLAlchemy(DataBase):
     def get_book(self, ID) -> Union[Book, None]:
         session = Session(self.engine)
         try:
-            book = [book for book in session.query(Book).all() if book.ID == ID][0]
-        except IndexError:
+            book = session.query(Book).filter_by(ID=ID).first()
+        except:
             return None
         session.close()
         return book
@@ -216,8 +218,17 @@ class DataBaseSQLAlchemy(DataBase):
     def get_reader(self, ID):
         session = Session(self.engine)
         try:
-            reader = [reader for reader in session.query(Reader).all() if reader.ID == ID][0]
-        except IndexError:
+            reader = session.query(Reader).filter_by(ID=ID).first()
+        except:
+            return None
+        session.close()
+        return reader
+
+    def get_reader_by_email(self, email):
+        session = Session(self.engine)
+        try:
+            reader = session.query(Reader).filter_by(email=email).first()
+        except:
             return None
         session.close()
         return reader

@@ -16,8 +16,12 @@ class Reader(Base):
     age = Column(Integer)
     is_admin = Column(Boolean)
 
-    email = Column(Text, unique=True)
-    password = Column(Text, unique=True)
+    email = Column(Text, unique=True, nullable=False)
+    password = Column(Text, unique=True, nullable=False)
+
+    is_authenticated = Column(Boolean)
+    is_active = Column(Boolean)
+    is_anonymous = Column(Boolean)
 
     def __init__(self,
                  ID: Union[int, None],
@@ -37,6 +41,9 @@ class Reader(Base):
         self.is_admin = is_admin
         self.email = email
         self.password = password
+
+    def get_id(self):
+        return self.ID
 
     def __repr__(self):
         return f'({self.ID}) {self.surname} {self.name} {self.patronymic} | {self.age}'
