@@ -153,7 +153,7 @@ class DataBaseSQLAlchemy(DataBase):
         """Добавление книги"""
         session = Session(self.engine)
         try:
-            session.add(book)
+            session.add(book)  # Добавляем книгу в базу данных
             session.commit()
         except:
             return False
@@ -162,25 +162,25 @@ class DataBaseSQLAlchemy(DataBase):
 
     def update_book(self, book: Book):
         session = Session(self.engine)
-        old_book = session.query(Book).filter_by(ID=book.ID).first()
+        old_book = session.query(Book).filter_by(ID=book.ID).first()  # Берем книгу из бд
         print(old_book)
-        old_book.title = book.title
-        old_book.author = book.author
-        old_book.year = book.year
-        old_book.reader_id = book.reader_id
+        old_book.title = book.title  # Обновляем поле title
+        old_book.author = book.author  # Обновляем поле author
+        old_book.year = book.year  # Обновляем поле year
+        old_book.reader_id = book.reader_id  # Обновляем поле reader_id
         print(session.dirty)
         session.commit()
 
     def delete_book(self, book: Book):
         session = Session(self.engine)
-        session.delete(book)
+        session.delete(book)  # Удаляем книгу из базы данных
         session.commit()
         session.close()
 
     def add_reader(self, reader: Reader):
         session = Session(self.engine)
         try:
-            session.add(reader)
+            session.add(reader)  # Добавляем читателя в базу данных
             session.commit()
         except Exception as e:
             print(e)
@@ -190,26 +190,26 @@ class DataBaseSQLAlchemy(DataBase):
 
     def update_reader(self, reader: Reader):
         session = Session(self.engine)
-        old_reader = session.query(Reader).filter_by(ID=reader.ID).first()
+        old_reader = session.query(Reader).filter_by(ID=reader.ID).first()  # Берем книгу из бд
         print(old_reader)
-        old_reader.name = reader.name
-        old_reader.surname = reader.surname
-        old_reader.patronymic = reader.patronymic
-        old_reader.age = reader.age
-        old_reader.is_admin = reader.is_admin
+        old_reader.name = reader.name  # Обновляем поле name
+        old_reader.surname = reader.surname  # Обновляем поле surname
+        old_reader.patronymic = reader.patronymic  # Обновляем поле patronymic
+        old_reader.age = reader.age  # Обновляем поле age
+        old_reader.is_admin = reader.is_admin  # Обновляем поле is_admin
         print(session.dirty)
         session.commit()
 
     def delete_reader(self, reader: Reader):
         session = Session(self.engine)
-        session.delete(reader)
+        session.delete(reader)  # Удаляю читателя из базы данных
         session.commit()
         session.close()
 
     def get_book(self, ID) -> Union[Book, None]:
         session = Session(self.engine)
         try:
-            book = session.query(Book).filter_by(ID=ID).first()
+            book = session.query(Book).filter_by(ID=ID).first()  # Берем книгу из бд
         except:
             return None
         session.close()
@@ -218,7 +218,7 @@ class DataBaseSQLAlchemy(DataBase):
     def get_reader(self, ID):
         session = Session(self.engine)
         try:
-            reader = session.query(Reader).filter_by(ID=ID).first()
+            reader = session.query(Reader).filter_by(ID=ID).first()  # Берем читателя из бд
         except:
             return None
         session.close()
@@ -227,7 +227,7 @@ class DataBaseSQLAlchemy(DataBase):
     def get_reader_by_email(self, email):
         session = Session(self.engine)
         try:
-            reader = session.query(Reader).filter_by(email=email).first()
+            reader = session.query(Reader).filter_by(email=email).first()  # Берем читателя из бд по email
         except:
             return None
         session.close()
@@ -235,13 +235,13 @@ class DataBaseSQLAlchemy(DataBase):
 
     def get_books(self):
         session = Session(self.engine)
-        books = session.query(Book).all()
+        books = session.query(Book).all()  # Берем все книги из бд
         session.close()
         return books
 
     def get_readers(self):
         session = Session(self.engine)
-        readers = session.query(Reader).all()
+        readers = session.query(Reader).all()  # Берем всех читателей из бд
         session.close()
         return readers
 

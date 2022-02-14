@@ -5,7 +5,7 @@ from Library.DataBase.DataBase import DataBaseSQLAlchemy
 
 class Library:
     def __init__(self):
-        self.__data_base = DataBaseSQLAlchemy()
+        self.__data_base = DataBaseSQLAlchemy()  # Создание экземпляра объекта для работы с базой данных
 
     def add_book(self, title: str, author: str, year: int):
         """Добавление книги"""
@@ -32,16 +32,24 @@ class Library:
         return 'Done: reader was successfully added to the library'
 
     def add_admins(self, readers_ids):
+        """
+        Добавление сразу нескольких администраторов
+
+        :param readers_ids: id Пользователей, которых нужно сделать администраторами
+        :return: msg (Ответ, успешно/нет)
+        """
         msg = ''
         for reader_id in readers_ids:
-            reader = self.__data_base.get_reader(reader_id)
+            # Перебираем список id'шнеков
+            reader = self.__data_base.get_reader(reader_id)  # Берем пользователя из бд, у которого такой же id
             if not reader:
+                # Проверяем, существует ли он
                 msg += f'Error: Reader {reader_id} not found\n'
                 continue
 
-            reader.is_admin = True
-            self.__data_base.update_reader(reader)
-            msg += f'Done: reader {reader_id} - admin\n'
+            reader.is_admin = True  # Делаем пользователя администратором
+            self.__data_base.update_reader(reader)  # Обновляем пользователя в бд
+            msg += f'Done: reader {reader_id} - admin\n'  # Добавляем к сообщению запись про успешное добавление админа
         return msg
 
     def del_book(self, book_id: int):
@@ -101,12 +109,12 @@ class Library:
         msg = ''
         for reader_id in readers_ids:
             reader = self.__data_base.get_reader(reader_id)
-            if not reader:
+            if not reader:  # Проверяем есть ли такой пользователь в бд
                 msg += f'Error: Reader {reader_id} not found\n'
                 continue
 
             reader.is_admin = False
-            self.__data_base.update_reader(reader)
+            self.__data_base.update_reader(reader)  # Обновляем пользователя в бд
             msg += f'Done: reader {reader_id} - delete from admins list\n'
         return msg
 
@@ -191,7 +199,6 @@ class Library:
         Функция возврата нескольких книг в библиотеку
 
         :param book_id_list: список из id книг, которые возвращаем читателю
-        :param reader_id: id читателя, который возвращает книгу
         """
         msg = ''
         for book_id in book_id_list:
@@ -271,21 +278,21 @@ class Library:
         return readers
 
     def get_reader_by_id(self, reader_id):
-        reader = self.__data_base.get_reader(reader_id)
+        reader = self.__data_base.get_reader(reader_id)  # Берем читателя из бд
         print(reader)
         if not reader:
             return None
         return reader
 
     def get_reader_by_email(self, reader_email):
-        reader = self.__data_base.get_reader_by_email(reader_email)
+        reader = self.__data_base.get_reader_by_email(reader_email)  # Берем читателя из бд по email
         print(reader)
         if not reader:
             return None
         return reader
 
     def get_admins(self):
-        readers = [reader for reader in self.__data_base.get_readers() if reader.is_admin]
+        readers = [reader for reader in self.__data_base.get_readers() if reader.is_admin]  # Берем админов из бд
         if not len(readers):
             return None
         return readers
