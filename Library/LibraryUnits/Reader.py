@@ -3,7 +3,7 @@
 """
 from typing import Union
 from Library.DataBase.DataBaseConfig import Base
-from sqlalchemy import Column, Integer, ARRAY, Boolean, Text, ForeignKey
+from sqlalchemy import Column, Integer, ARRAY, Boolean, Text, ForeignKey, DateTime
 
 
 class Reader(Base):
@@ -18,10 +18,6 @@ class Reader(Base):
 
     email = Column(Text, unique=True, nullable=False)
     password = Column(Text, unique=True, nullable=False)
-
-    is_authenticated = Column(Boolean)
-    is_active = Column(Boolean)
-    is_anonymous = Column(Boolean)
 
     def __init__(self,
                  ID: Union[int, None],

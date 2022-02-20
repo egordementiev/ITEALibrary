@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="rightCol">
+    {% if user %}
+        <h1>{{ user.surname }} {{ user.name }} {{ user.patronymic }} Profile</h1>
+        {% if profile_msg %}
+            <h2>{{ profile_msg }}</h2>
+        {% endif %}
+        <table>
+            <thead>
+            <tr>
+                <th><center>Name</center></th>
+                <th><center>Surname</center></th>
+                <th><center>Patronymic</center></th>
+                <th><center>Age</center></th>
+                <th><center>Books</center></th>
+            </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{user.name}}</td>
+                    <td>{{user.surname}}</td>
+                    <td>{{user.patronymic}}</td>
+                    <td>{{user.age}}</td>
+                    {% if books %}
+                        <td>{% for book in books -%} "{{ book.title }}" <br /> {% endfor -%}</td>
+                    {% else %}
+                        <td>У вас на руках нет не одной книги</td>
+                    {% endif %}
+                </tr>
+            </tbody>
+        </table>
+        <ul>
+            <li>
+                <form method="post" action="">
+                    <select name="field">
+                        <option value="delete_account">Delete account</option>
+                        <option value="change_password">Change password</option>
+                    </select>
+                    <button type="submit">Next</button>
+                </form>
+            </li>
+        </ul>
+    {% else %}
+    <ul>
+        <li><h1>No books yet</h1></li>
+    </ul>
+    {% endif %}
+</div>
+{% endblock %}

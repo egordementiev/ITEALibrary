@@ -296,3 +296,11 @@ class Library:
         if not len(readers):
             return None
         return readers
+
+    def get_books_by_reader(self, reader: Reader):
+        if not reader:
+            return None
+        books = [book for book in self.__data_base.get_books() if book.reader_id == reader.ID]
+        if not books:
+            return None
+        return books
