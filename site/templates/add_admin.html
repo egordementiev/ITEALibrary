@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="rightCol">
+    {% if message %}
+    <h2>{{message}}</h2>
+    <br><br>
+    {% endif %}
+
+    {% if readers %}
+        <h1>Select the reader to make admin</h1>
+        <form method="post">
+            <table>
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Surname</th>
+                    <th>Patronymic</th>
+                    <th>Age</th>
+                    <th>Admin</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for reader in readers %}
+                    <tr>
+                        <td><input type="checkbox" name="{{reader.ID}}" value=""></td>
+                        <td>{{reader.ID}}</td>
+                        <td>{{reader.name}}</td>
+                        <td>{{reader.surname}}</td>
+                        <td>{{reader.patronymic}}</td>
+                        <td>{{reader.age}}</td>
+                        <td>{{reader.is_admin}}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <center>
+                <button type="submit" class="minWidth">Make admin</button>
+            </center>
+        </form>
+    {% else %}
+        <h1>No reader yet</h1>
+    {% endif %}
+</div>
+{% endblock %}
