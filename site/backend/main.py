@@ -5,10 +5,12 @@ from dotenv import load_dotenv
 from Library.library import Library
 from flask_login import LoginManager, login_user, login_required, current_user, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
+from validate_email import validate_email
 
 
 class UserLogin:
     """ Класс для описания пользователя, который вошел в аккаунт """
+
     def fromDB(self, reader_id, db: Library):
         self.__user = db.get_reader_by_id(reader_id)
         return self
@@ -36,8 +38,8 @@ app = Flask(__name__,
             template_folder='../templates',
             static_folder='../static')
 
-login_manager = LoginManager()
-login_manager.init_app(app)  # Создаем менеджер для регистрации и входа в аккаунт пользователями
+login_manager = LoginManager(app)  # Создаем менеджер для регистрации и входа в аккаунт пользователями
+login_manager.login_view = 'api_login'
 
 app.config['DEBUG'] = True  # Ставим DEBUG = True для тестов, потом нужно поменять на False
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')  # Выгружаем из окружения секретный ключ
@@ -62,10 +64,15 @@ def api_login():
     """ Вход пользователя в аккаунт """
     user = lib.get_reader_by_id(current_user.get_id())  # Берем пользователя из библиотеки
 
+    if user:
+        return redirect(url_for('index'))  # Редиректим пользователя на главную страницу, если он уже вошел в аккаунт
+
     if request.method == 'POST':
         # Обработчик POST запроса
         email = request.form.get('email')  # Получаем почту из формы
         password = request.form.get('password')  # Получаем пароль из формы
+
+        next_url = request.args.get('next')
 
         if not email or not password:
             # Проверяем данные на валидность
@@ -76,6 +83,9 @@ def api_login():
         if user and password and check_password_hash(user.password, password):  # Проверяем правильно ли введен пароль
             userlogin = UserLogin().create(user)  # Создаем объект зарегистрированного пользователя
             login_user(userlogin)
+            if next_url:
+                return redirect(next_url)  # После входа - переносим пользователя на главную страницу
+
             return redirect(url_for('index'))  # После входа - переносим пользователя на главную страницу
 
     return render_template('login.html', user=user)
@@ -85,6 +95,9 @@ def api_login():
 def api_registration():
     """ Регистрация пользователя """
     user = lib.get_reader_by_id(current_user.get_id())
+
+    if user:
+        return redirect(url_for('index'))  # Редиректим пользователя на главную страницу, если он уже вошел в аккаунт
 
     if request.method == 'POST':
         # Обрабатываем POST запрос
@@ -131,16 +144,68 @@ def api_sign_out():
     return redirect(url_for('index'))
 
 
-@app.route('/books', methods=['GET'])
+@app.route('/my_profile', methods=['GET', 'POST'])
+@login_required
+def api_get_profile():
+    user = lib.get_reader_by_id(current_user.get_id())  # Берем пользователя, который делает запрос
+
+    if not user:
+        # Проверяем, что он зарегистрирован
+        return redirect(url_for('login'))
+
+    books = lib.get_books_by_reader(user)
+
+    return render_template('my_profile.html', user=user, books=books)
+
+
+@app.route('/books', methods=['GET', 'POST'])
 def api_get_all_books():
     """ Страница со списком всех книг """
     sort = request.args.get('sort')  # Получаем поле для сортировки из запроса, если оно будет
-                                     # не валидным, книги будут отсортированы по id
-    user = lib.get_reader_by_id(current_user.get_id())  # Берем пользователя, который делает запрос,
-                                                        # если это гость, вернем None
+    # не валидным, то книги будут отсортированы по id
 
-    books = lib.get_books(sort=sort)  # Берем книги из бд и сортируем по параметру sort
-    return render_template('books.html', books=books, user=user)
+    reverse = request.args.get('reverse')  # Получаем поле реверс, если оно есть
+    if not reverse or reverse not in ['true', 'false'] or reverse == 'false':
+        reverse_bool = False  # Если поле реверс = 'false' ставим reverse_bool = False, а reverse = 'true'
+        reverse = 'true'  # Что бы при следующем нажатии мы отсортировали книги в обратном порядке
+    else:
+        reverse_bool = True  # Если поле реверс = 'true' ставим reverse_bool = True, а reverse = 'false'
+        reverse = 'false'  # Что бы при следующем нажатии мы отсортировали книги в обратном порядке
+
+    user = lib.get_reader_by_id(current_user.get_id())  # Берем пользователя, который делает запрос,
+    # если это гость, вернем None
+
+    if request.method == 'POST':  # Обрабатываем запрос на поиск книги, который приходит ввиде POST запроса
+        search = request.form.get('search')  # Забираем поле search из запроса
+        field = request.form.get('field')  # Забираем поле field из запроса
+        if not search:
+            books = lib.get_books(sort=sort, reverse=reverse_bool)  # Берем книги из бд и сортируем по параметру sort
+            return render_template('books.html', books=books, user=user, reverse=reverse)
+
+        if not field or field not in ['id', 'title', 'author', 'year']:
+            field = 'id'  # Если поле field невалидное ставим field = 'id'
+
+        # Проводим поиск книг
+        if field == 'id':
+            if not search.isnumeric():
+                books = None
+            else:
+                books = [book for book in lib.get_books(sort=sort, reverse=reverse_bool) if book.ID == int(search)]
+        elif field == 'title':
+            books = [book for book in lib.get_books(sort=sort, reverse=reverse_bool) if book.title.startswith(search)]
+        elif field == 'author':
+            books = [book for book in lib.get_books(sort=sort, reverse=reverse_bool) if book.author.startswith(search)]
+        elif field == 'year':
+            if not search.isnumeric():
+                books = None
+            else:
+                books = [book for book in lib.get_books(sort=sort, reverse=reverse_bool) if book.year == int(search)]
+        # ===========================================================================================================
+
+        return render_template('books.html', books=books, user=user, reverse=reverse)  # Отвечаем html'ем с книгами
+
+    books = lib.get_books(sort=sort, reverse=reverse_bool)  # Берем книги из бд и сортируем по параметру sort
+    return render_template('books.html', books=books, user=user, reverse=reverse)  # Отвечаем html'ем с книгами
 
 
 @app.route('/add_book', methods=['GET', 'POST'])
@@ -187,15 +252,26 @@ def api_delete_book():
         # Проверяем, что он админ
         return redirect(url_for('index'))
 
+    reverse = request.args.get('reverse')  # Получаем поле реверс, если оно есть
+    if not reverse or reverse not in ['true', 'false'] or reverse == 'false':
+        reverse_bool = False  # Если поле реверс = 'false' ставим reverse_bool = False, а reverse = 'true'
+        reverse = 'true'  # Что бы при следующем нажатии мы отсортировали книги в обратном порядке
+    else:
+        reverse_bool = True  # Если поле реверс = 'true' ставим reverse_bool = True, а reverse = 'false'
+        reverse = 'false'  # Что бы при следующем нажатии мы отсортировали книги в обратном порядке
+
+    sort = request.args.get('sort')  # Берем поле для сортировки книг из запроса
+
     if request.method == 'POST':
         # Обработчик POST запросов
         id_books = [int(i) for i in request.form.keys() if i.isnumeric()]  # Берем книги которые были отмечены в таблице
         if len(id_books):
             ret_msg = lib.del_books(id_books)  # Удаляем отмеченные книги, если отмечена хотя бы одна книга
-            return render_template('delete_book.html', books=lib.get_books(), message=ret_msg, user=user)
+            return render_template('delete_book.html', books=lib.get_books(sort=sort, reverse=reverse_bool),
+                                   message=ret_msg, user=user, reverse=reverse)
 
-    sort = request.args.get('sort')  # Берем поле для сортировки книг из запроса
-    return render_template('delete_book.html', books=lib.get_books(sort=sort), user=user)
+    return render_template('delete_book.html', books=lib.get_books(sort=sort, reverse=reverse_bool),
+                           user=user, reverse=reverse)
 
 
 @app.route('/take_book', methods=['GET', 'POST'])

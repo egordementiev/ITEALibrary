@@ -36,6 +36,27 @@ class DataBase(ABC):
     def delete_reader(self, reader):
         pass
 
+    @abstractmethod
+    def get_book(self, ID):
+        pass
+
+    @abstractmethod
+    def get_reader(self, ID):
+        pass
+
+    @abstractmethod
+    def get_reader_by_email(self, email):
+        pass
+
+    @abstractmethod
+    def get_books(self):
+        pass
+
+    @abstractmethod
+    def get_readers(self):
+        pass
+
+
 
 # class DataBaseJSON(DataBase):
 #     def write_to_db(self, write_data, data_base_title):
@@ -145,7 +166,7 @@ class DataBase(ABC):
 
 class DataBaseSQLAlchemy(DataBase):
     """ Клас описывающий роботу с базой данных PostgreSQL """
-    def __init__(self, dbport='5432', dbhost='localhost', dbpassword='123', dbname='postgres', dbuser='postgres'):
+    def __init__(self, dbport='5434', dbhost='localhost', dbpassword='123', dbname='postgres', dbuser='postgres'):
         self.engine = create_engine(f'postgresql://{dbuser}:{dbpassword}@{dbhost}:{dbport}/{dbname}')
         Base.metadata.create_all(self.engine)
 

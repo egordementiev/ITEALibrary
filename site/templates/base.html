@@ -7,11 +7,12 @@
 		<meta name="keywords" content="">
 		<link rel="stylesheet" type="text/css" href="../static/style/style.css" media="all">
 	</head>
+	<script src="https://code.jquery.com/jquery-2.1.0.js"></script>
 	<body>
 		<div class="wrapper">
 			<div class="header">
 				<div class="headerContent">
-					<div class="left"><h1><a href="/">LIA</a></h1><p>Library ITEA Advance by SHYIAN OLEKSII</p></div>
+					<div class="left"><h1><a href="/">LIA</a></h1><p>Library ITEA Advance by SHYIAN OLEKSII and DEMENTIEV EGOR</p></div>
 					<div class="right">
 					</div>
 				</div>
@@ -27,6 +28,7 @@
 			</div>
 
 			<div class="nav">
+
 				{% if user %}
 					<label class="userInfo">Hello {{ user.name }}</label>
 					<ul class="menu">
@@ -51,6 +53,7 @@
 						<h2>General menu</h2>
 						<ul class="general_menu">
 							<li><a href="books">All books</a></li>
+							<li><a href="my_profile">Your profile</a></li>
 							{% if user.is_admin %}
 								<li><a href="add_book">Add book</a></li>
 								<li><a href="delete_book">Delete book</a></li>
@@ -69,7 +72,7 @@
 
 			<div class="footer">
 				<div class="footerContent">
-					<h1>Copyright © 2022 SHYIAN OLEKSII</h1>
+					<h1>Copyright © 2022 FRONTEND - SHYIAN OLEKSII BACKEND - DEMENTIEV EGOR</h1>
 				</div>
 			</div>
 
