@@ -5,25 +5,27 @@
     {% if message %}
         <h2>{{ message }}</h2>
     {% endif %}
-    <form method="post">
+    <form method="post" role="form">
         <center>
-            <input type="hidden" name="next" value="{{ request.args.get('next', '') }}"/>
+            <div class="form-group">
+                <input type="hidden" name="next" value="{{ request.args.get('next', '') }}"/>
 
-            <h1>Registration</h1><br>
-            <input type="text" name="email" placeholder="Email" required><br>
-            <input type="password" id="password" name="password" placeholder="Password" required><br>
-            <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm Password" required><br>
+                <h1>Registration</h1><br>
+                <input type="text" name="email" placeholder="Email" required class="form-control"><br>
+                <input type="password" id="password" name="password" placeholder="Password" required class="form-control"><br>
+                <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm Password" required class="form-control"><br>
 
-            <br><br>
+                <br><br>
 
-            <input type="text" name="name" placeholder="Name" required><br>
-            <input type="text" name="surname" placeholder="Surname" required><br>
-            <input type="text" name="patronymic" placeholder="Patronymic" required><br>
-            <input type="text" name="age" placeholder="Your age" required><br>
+                <input type="text" name="name" placeholder="Name" required class="form-control"><br>
+                <input type="text" name="surname" placeholder="Surname" required class="form-control"><br>
+                <input type="text" name="patronymic" placeholder="Patronymic" required class="form-control"><br>
+                <input type="text" name="age" placeholder="Your age" required class="form-control"><br>
 
-            <br><br>
+                <br><br>
 
-            <button type="submit" class="btn btn-success">Registration</button>
+                <button type="submit" class="btn btn-success">Registration</button>
+            </div>
         </center>
     </form>
     <script>
