@@ -3,8 +3,8 @@
 <div class="rightCol">
     {% if user %}
         <h1>{{ user.surname }} {{ user.name }} {{ user.patronymic }} Profile</h1>
-        {% if profile_msg %}
-            <h2>{{ profile_msg }}</h2>
+        {% if message %}
+            <h2>{{ message }}</h2>
         {% endif %}
         <table>
             <thead>
@@ -33,11 +33,10 @@
         <ul>
             <li>
                 <form method="post" action="">
-                    <select name="field">
+                    <select name="action">
                         <option value="delete_account">Delete account</option>
-                        <option value="change_password">Change password</option>
                     </select>
-                    <button type="submit">Next</button>
+                    <button type="submit">Submit</button>
                 </form>
             </li>
         </ul>

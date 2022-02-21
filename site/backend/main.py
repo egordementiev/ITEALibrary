@@ -155,6 +155,21 @@ def api_get_profile():
 
     books = lib.get_books_by_reader(user)
 
+    if request.method == 'POST':
+        action = request.form.get('action')
+        if not action or action not in ['delete_account']:
+            return render_template('my_profile.html', user=user, books=books)
+
+        books = lib.get_books_by_reader(user)
+        if action == 'delete_account':
+            if books:
+                return render_template('my_profile.html', user=user, books=books,
+                                       message='Верните все книги, прежде чем удалить аккаунт')
+
+            logout_user()
+            lib.del_reader(user.ID)
+            return redirect(url_for('api_registration'))
+
     return render_template('my_profile.html', user=user, books=books)
 
 
