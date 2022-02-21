@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="rightCol">
+<div class="container">
     {% if message %}
     <h2>{{message}}</h2>
     <br><br>
@@ -9,28 +9,30 @@
     {% if books %}
         <h1>All available books in the library</h1>
         <form method="post">
-            <table>
-                <thead>
-                <tr>
-                    <th>#</th>
-                    <th><a class="sort_field" href="?sort=id">ID</a></th>
-                    <th><a class="sort_field" href="?sort=title">Title</a></th>
-                    <th><a class="sort_field" href="?sort=author">Author</a></th>
-                    <th><a class="sort_field" href="?sort=year">Year</a></th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for book in books %}
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered">
+                    <thead>
                     <tr>
-                        <td><input type="checkbox" name="{{book.ID}}"></td>
-                        <td>{{book.ID}}</td>
-                        <td>{{book.title}}</td>
-                        <td>{{book.author}}</td>
-                        <td>{{book.year}}</td>
+                        <th>#</th>
+                        <th><a class="sort_field" href="?sort=id">ID</a></th>
+                        <th><a class="sort_field" href="?sort=title">Title</a></th>
+                        <th><a class="sort_field" href="?sort=author">Author</a></th>
+                        <th><a class="sort_field" href="?sort=year">Year</a></th>
                     </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    {% for book in books %}
+                        <tr>
+                            <td><input type="checkbox" name="{{book.ID}}"></td>
+                            <td>{{book.ID}}</td>
+                            <td>{{book.title}}</td>
+                            <td>{{book.author}}</td>
+                            <td>{{book.year}}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
             <input type="text" id="reader_id" name="reader_id" placeholder="Reader" required>
             <center>
                 <button type="submit" class="minWidth">Take books</button>
@@ -38,7 +40,7 @@
             </center>
         </form>
     {% else %}
-    <h1>No books yet</h1>
+        <h1>No books yet</h1>
     {% endif %}
 </div>
 {% endblock %}

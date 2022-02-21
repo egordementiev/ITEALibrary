@@ -1,24 +1,22 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="addBookCol">
+<div class="container">
 
     {% if message %}
     <h2>{{message}}</h2>
     <br><br>
     {% endif %}
 
-    <h1>Add new book</h1><p></p>
-
     <form method="post">
-        <h2>Book</h2><br>
-        <input type="text" id="title" name="title" placeholder="Title" required>
-        <input type="text" id="author" name="author" placeholder="Author" required>
-        <input type="text" id="year" name="year" placeholder="Year" required>
-
-
-        <br><br>
-
         <center>
+            <h1>Add new book</h1><p></p>
+            <input type="text" id="title" name="title" placeholder="Title" required><br>
+            <input type="text" id="author" name="author" placeholder="Author" required><br>
+            <input type="text" id="year" name="year" placeholder="Year" required><br>   
+
+
+            <br><br>
+
             <button type="submit" class="minWidth">Add book</button>
             <button type="reset" class="minWidth">Reset</button>
         </center>

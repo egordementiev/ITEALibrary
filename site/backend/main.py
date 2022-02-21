@@ -197,8 +197,6 @@ def api_get_all_books():
             books = lib.get_books(sort=sort, reverse=reverse_bool)  # Берем книги из бд и сортируем по параметру sort
             return render_template('books.html', books=books, user=user, reverse=reverse)
 
-        search = ''.join([letter for letter in search if letter.isalpha()]).lower()
-
         if not field or field not in ['id', 'title', 'author', 'year']:
             field = 'id'  # Если поле field невалидное ставим field = 'id'
 
@@ -209,9 +207,11 @@ def api_get_all_books():
             else:
                 books = [book for book in lib.get_books(sort=sort, reverse=reverse_bool) if book.ID == int(search)]
         elif field == 'title':
+            search = ''.join([letter for letter in search if letter.isalpha()]).lower()
             books = [book for book in lib.get_books(sort=sort, reverse=reverse_bool)
                      if ''.join([letter for letter in book.title if letter.isalpha()]).lower().startswith(search)]
         elif field == 'author':
+            search = ''.join([letter for letter in search if letter.isalpha()]).lower()
             books = [book for book in lib.get_books(sort=sort, reverse=reverse_bool)
                      if ''.join([letter for letter in book.author if letter.isalpha()]).lower().startswith(search)]
         elif field == 'year':

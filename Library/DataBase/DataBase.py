@@ -165,7 +165,7 @@ class DataBase(ABC):
 
 class DataBaseSQLAlchemy(DataBase):
     """ Клас описывающий роботу с базой данных PostgreSQL """
-    def __init__(self, dbport='5434', dbhost='localhost', dbpassword='123', dbname='postgres', dbuser='postgres'):
+    def __init__(self, dbport='5432', dbhost='localhost', dbpassword='123', dbname='postgres', dbuser='postgres'):
         self.engine = create_engine(f'postgresql://{dbuser}:{dbpassword}@{dbhost}:{dbport}/{dbname}')
         Base.metadata.create_all(self.engine)
 
