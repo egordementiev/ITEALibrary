@@ -84,9 +84,11 @@ class Library:
         :param reader_id: id читателя, которого удаляем
         """
         reader = self.__data_base.get_reader(reader_id)
+        print(reader)
         if reader:  # Проверяем есть ли такой пользователь в бд
             for book in self.__data_base.get_books():
-                if book.reader_id() == reader_id:  # Проверяем есть ли у этого читателя книга
+                print(f'book = {book}')
+                if book.reader_id == reader_id:  # Проверяем есть ли у этого читателя книга
                     return 'Error, this reader has a book'
             self.__data_base.delete_reader(reader)  # Если не найденно не одной книги у этого читателя - удаляем его
             return 'Done'
