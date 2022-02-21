@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="rightCol">
+<div class="container">
     {% if books %}
         <h1>All books in library</h1>
         <ul>
@@ -13,32 +13,34 @@
                         <option value="author">Author</option>
                         <option value="year">Year</option>
                     </select>
-                    <button type="submit">Search</button>
+                    <button type="submit" class="btn btn-primary">Search</button>
                 </form>
             </li>
         </ul>
-        <table>
-            <thead>
-            <tr>
-                <th><a class="sort_field" href="?sort=id&reverse={{reverse}}"><center>ID</center></a></th>
-                <th><a class="sort_field" href="?sort=title&reverse={{reverse}}"><center>Title</center></a></th>
-                <th><a class="sort_field" href="?sort=author&reverse={{reverse}}"><center>Author</center></a></th>
-                <th><a class="sort_field" href="?sort=year&reverse={{reverse}}"><center>Year</center></a></th>
-                <th><center>Reader ID</center></th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for book in books %}
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered">
+                <thead>
                 <tr>
-                    <td>{{book.ID}}</td>
-                    <td>{{book.title}}</td>
-                    <td>{{book.author}}</td>
-                    <td>{{book.year}}</td>
-                    <td>{{book.reader_id}}</td>
+                    <th><a class="sort_field" href="?sort=id&reverse={{reverse}}"><center>ID</center></a></th>
+                    <th><a class="sort_field" href="?sort=title&reverse={{reverse}}"><center>Title</center></a></th>
+                    <th><a class="sort_field" href="?sort=author&reverse={{reverse}}"><center>Author</center></a></th>
+                    <th><a class="sort_field" href="?sort=year&reverse={{reverse}}"><center>Year</center></a></th>
+                    <th><center>Reader ID</center></th>
                 </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                {% for book in books %}
+                    <tr>
+                        <td>{{book.ID}}</td>
+                        <td>{{book.title}}</td>
+                        <td>{{book.author}}</td>
+                        <td>{{book.year}}</td>
+                        <td>{{book.reader_id}}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
     {% else %}
     <ul>
         <li><h1>No books yet</h1></li>
@@ -51,7 +53,7 @@
                     <option value="author">Author</option>
                     <option value="year">Year</option>
                 </select>
-                <button type="submit">Search</button>
+                <button type="submit" class="btn btn-success">Search</button>
             </form>
         </li>
     </ul>

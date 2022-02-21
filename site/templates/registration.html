@@ -1,28 +1,30 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="signInCol" id="signIn">
+<div class="container" id="signIn">
     {% if message %}
         <h2>{{ message }}</h2>
     {% endif %}
     <form method="post">
-        <input type="hidden" name="next" value="{{ request.args.get('next', '') }}"/>
+        <center>
+            <input type="hidden" name="next" value="{{ request.args.get('next', '') }}"/>
 
-        <h1>Registration</h1><br>
-        <input type="text" name="email" placeholder="Email" required>
-        <input type="password" id="password" name="password" placeholder="Password" required>
-        <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm Password" required>
+            <h1>Registration</h1><br>
+            <input type="text" name="email" placeholder="Email" required><br>
+            <input type="password" id="password" name="password" placeholder="Password" required><br>
+            <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm Password" required><br>
 
-        <br><br>
+            <br><br>
 
-        <input type="text" name="name" placeholder="Name" required>
-        <input type="text" name="surname" placeholder="Surname" required>
-        <input type="text" name="patronymic" placeholder="Patronymic" required>
-        <input type="text" name="age" placeholder="Your age" required>
+            <input type="text" name="name" placeholder="Name" required><br>
+            <input type="text" name="surname" placeholder="Surname" required><br>
+            <input type="text" name="patronymic" placeholder="Patronymic" required><br>
+            <input type="text" name="age" placeholder="Your age" required><br>
 
-        <br><br>
+            <br><br>
 
-        <center><button type="submit" class="minWidth">Registration</button></center>
+            <button type="submit" class="btn btn-success">Registration</button>
+        </center>
     </form>
     <script>
         $("#password").hover(function(){

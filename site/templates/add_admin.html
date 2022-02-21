@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="rightCol">
+<div class="container">
     {% if message %}
     <h2>{{message}}</h2>
     <br><br>
@@ -9,34 +9,36 @@
     {% if readers %}
         <h1>Select the reader to make admin</h1>
         <form method="post">
-            <table>
-                <thead>
-                <tr>
-                    <th>#</th>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Surname</th>
-                    <th>Patronymic</th>
-                    <th>Age</th>
-                    <th>Admin</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for reader in readers %}
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered">
+                    <thead>
                     <tr>
-                        <td><input type="checkbox" name="{{reader.ID}}" value=""></td>
-                        <td>{{reader.ID}}</td>
-                        <td>{{reader.name}}</td>
-                        <td>{{reader.surname}}</td>
-                        <td>{{reader.patronymic}}</td>
-                        <td>{{reader.age}}</td>
-                        <td>{{reader.is_admin}}</td>
+                        <th>#</th>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Surname</th>
+                        <th>Patronymic</th>
+                        <th>Age</th>
+                        <th>Admin</th>
                     </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    {% for reader in readers %}
+                        <tr>
+                            <td><input type="checkbox" name="{{reader.ID}}" value=""></td>
+                            <td>{{reader.ID}}</td>
+                            <td>{{reader.name}}</td>
+                            <td>{{reader.surname}}</td>
+                            <td>{{reader.patronymic}}</td>
+                            <td>{{reader.age}}</td>
+                            <td>{{reader.is_admin}}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
             <center>
-                <button type="submit" class="minWidth">Make admin</button>
+                <button type="submit" class="btn btn-success">Make admin</button>
             </center>
         </form>
     {% else %}
